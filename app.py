@@ -1,107 +1,102 @@
-from flask import Flask, request, render_template_string
+from flask import Flask, request, jsonify, render_template_string, redirect, url_for, render_template
+
+
+
 
 app = Flask(__name__)
 
-# HTML template for the calculator
-CALCULATOR_PAGE = """
+
+HTML_template = """
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Calculator</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f0f0f0;
-            text-align: center;
-        }
-        .calculator {
-            max-width: 400px;
-            margin: auto;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-        input, select, button {
-            margin: 10px 0;
-            padding: 10px;
-            width: calc(100% - 24px);
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        button {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-        h1 {
-            color: #333;
-        }
-        .result {
-            margin-top: 20px;
-            font-size: 20px;
-            color: #007BFF;
-        }
-    </style>
-</head>
-<body>
-    <div class="calculator">
-        <h1>Simple Calculator</h1>
-        <form method="POST">
-            <input type="number" name="num1" placeholder="Enter first number" required><br>
-            <input type="number" name="num2" placeholder="Enter second number" required><br>
-            <select name="operation" required>
-                <option value="add">Addition (+)</option>
-                <option value="subtract">Subtraction (-)</option>
-                <option value="multiply">Multiplication (*)</option>
-                <option value="divide">Division (/)</option>
-            </select><br>
-            <button type="submit">Calculate</button>
-        </form>
-        {% if result is not none %}
-        <div class="result">
-            <strong>Result: {{ result }}</strong>
-        </div>
-        {% endif %}
-    </div>
-</body>
+<html>
+    <head>
+        <title>Hiii</title>
+    </head>
+    <body>
+      <form method = "POST">
+         <label for="first1">inputt1:</label>
+         <input type="text" id="first1" name="first1" required>
+         <input type="text" id="second1" name="second1" required>
+         <input type="text" id="op" name="op" required>
+         <button type = "submit">Submit</button>
+      </form>  
+      
+      {% if output is not none %}
+      <h2>Result: {{ hier }}</h2>
+      {% endif %}
+
+    </body>
+
 </html>
+
+
+
+
+
 """
 
+# first = int(input("input first number:"))
+# Second = int(input("input second number:"))
+# operation = input("input your operation:")
+
+# first = int(first2)
+# Second = int(second2)
+# operation = op
+
+
+# if operation == "+":
+#   output = first + Second
+
+# elif operation == "-":
+#    output = first - Second
+
+# elif operation == "*":
+#    output = first * Second
+
+# elif operation == "/":
+#    output = first / Second
+# else :
+#   print("invalid operation")
+  
+# out1 = f"the output is {output}"
+# print(out1)
+
+
+
+
+
 @app.route("/", methods=["GET", "POST"])
-def calculator():
-    result = None
+def oper():
+    output = None  # Initialize output for the template
+    
     if request.method == "POST":
-        try:
-            # Get form data
-            num1 = float(request.form["num1"])
-            num2 = float(request.form["num2"])
-            operation = request.form["operation"]
+        
+            # Retrieve form data
+            first2 = request.form.get("first1")
+            second2 = request.form.get("second1")
+            oper2 = request.form.get("op")
+            
 
-            # Perform the selected operation
-            if operation == "add":
-                result = num1 + num2
-            elif operation == "subtract":
-                result = num1 - num2
-            elif operation == "multiply":
-                result = num1 * num2
-            elif operation == "divide":
-                if num2 != 0:
-                    result = num1 / num2
-                else:
-                    result = "Error: Division by zero!"
-        except ValueError:
-            result = "Invalid input. Please enter numbers only."
+                # Convert inputs to numbers
+            first = float(first2)
+            second = float(second2)
+            operation = oper2.strip()
 
-    return render_template_string(CALCULATOR_PAGE, result=result)
+                # Perform the calculation based on the operation
+            if operation == "+":
+                    output = first + second
+            elif operation == "-":
+                    output = first - second
+            elif operation == "*":
+                    output = first * second
+            else:
+                    output = "Invalid operation. Use +, -, *, or /."
+        
+    # Render the HTML template with the output
+    return render_template_string(HTML_template, hier=output)
 
-if __name__ == "__main__":
+
+if __name__ == '__main__':
+    
     app.run(debug=True)
